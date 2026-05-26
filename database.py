@@ -36,6 +36,7 @@ class Vehiculo(Base):
     anio = Column(Integer, nullable=False)
     km_actual = Column(Float, default=0)
     notas = Column(Text, default="")
+    tipo_vehiculo = Column(String(20), default="")
     itv_vencimiento = Column(Date, nullable=True)
     tacografo_vencimiento = Column(Date, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -71,3 +72,10 @@ def get_db():
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE vehiculos ADD COLUMN tipo_vehiculo VARCHAR(20) DEFAULT ''"))
+            conn.commit()
+        except Exception:
+            pass
